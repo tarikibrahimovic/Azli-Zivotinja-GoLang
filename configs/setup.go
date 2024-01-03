@@ -3,10 +3,12 @@ package configs
 import (
 	"context"
 	"fmt"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func ConnectDB() (*mongo.Client, error) {
@@ -35,6 +37,22 @@ func init() {
 	DB, err = ConnectDB()
 	if err != nil {
 		log.Fatalf("Error connecting to the database: %v", err)
+	}
+
+	// Get a handle to the collection
+	animalUsersCollection := GetCollection(DB, "Azil_Animal-Users")
+
+	// Create unique index on AnimalId
+	indexModel := mongo.IndexModel{
+		Keys: bson.M{
+			"animal_id": 1, // Index animal_id field in ascending order.
+		},
+		Options: options.Index().SetUnique(true),
+	}
+
+	_, err = animalUsersCollection.Indexes().CreateOne(context.Background(), indexModel)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 

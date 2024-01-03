@@ -13,7 +13,7 @@ func main() {
 	configs.ConnectDB()
 
 	//routes
-	routes.UserRoute(app) //add this
+	routes.AnimalUserRoute(app) //add this
 
 	app.Listen(":6000")
 }

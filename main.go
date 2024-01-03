@@ -4,16 +4,17 @@ import (
 	"azil-app/configs"
 	"azil-app/routes"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func main() {
 	app := fiber.New()
 
-	//run database
+	app.Use(cors.New())
+
 	configs.ConnectDB()
 
-	//routes
-	routes.AnimalUserRoute(app) //add this
+	routes.AnimalUserRoute(app)
 
 	app.Listen(":6000")
 }
